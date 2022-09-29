@@ -56,32 +56,24 @@ const Section = ({children, title}) => {
 };
 
 const App = ({componentId}) => {
-  const onPress = () => {
-    console.log('onPress red bottomTabs');
-    Navigation.mergeOptions(
-      componentId,
-      Object.assign(
-        {},
-        {
-          topBar: {
-            scrollEdgeAppearance: {
-              noBorder: true,
-            },
-          },
-          bottomTabs: {
-            backgroundColor: 'red',
-          },
-        },
-      ),
-    );
-  };
-
   const isDarkMode = useColorScheme() === 'dark';
   const prevDarkMode = useRef(isDarkMode);
 
+  const onPress = () => {
+    console.log('onPress red bottomTabs');
+    Navigation.mergeOptions(componentId, {
+      bottomTabs: {
+        backgroundColor: 'red',
+      },
+    });
+  };
   useEffect(() => {
     if (isDarkMode !== prevDarkMode.current) {
       prevDarkMode.current = isDarkMode;
+      console.log(
+        'should change bottom tabs background color; dark mode: %s',
+        isDarkMode,
+      );
       Navigation.mergeOptions(componentId, {
         bottomTabs: {
           backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -100,11 +92,16 @@ const App = ({componentId}) => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
+          <Section title="Home">
+            This app's bottoms tabs should react to light/dark mode change and
+            update in real-time. However it only happens after complete app
+            reload.
+          </Section>
+          <View style={{marginBottom: 40}} />
           <TouchableOpacity onPress={onPress}>
             <Text
               style={{
@@ -116,7 +113,6 @@ const App = ({componentId}) => {
               Tap to turn bottom tabs red
             </Text>
           </TouchableOpacity>
-          <Section title="Home text"></Section>
         </View>
       </ScrollView>
     </SafeAreaView>
