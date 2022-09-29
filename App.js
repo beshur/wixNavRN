@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,6 +16,7 @@ import {
   useColorScheme,
   View,
   TouchableOpacity,
+  Appearance,
 } from 'react-native';
 
 import {Navigation} from 'react-native-navigation';
@@ -54,8 +55,9 @@ const Section = ({children, title}) => {
   );
 };
 
-const App = ({componentId = '1'}) => {
+const App = ({componentId}) => {
   const onPress = () => {
+    console.log('onPress red bottomTabs');
     Navigation.mergeOptions(
       componentId,
       Object.assign(
@@ -75,6 +77,18 @@ const App = ({componentId = '1'}) => {
   };
 
   const isDarkMode = useColorScheme() === 'dark';
+  const prevDarkMode = useRef(isDarkMode);
+
+  useEffect(() => {
+    if (isDarkMode !== prevDarkMode.current) {
+      prevDarkMode.current = isDarkMode;
+      Navigation.mergeOptions(componentId, {
+        bottomTabs: {
+          backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        },
+      });
+    }
+  });
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -92,22 +106,17 @@ const App = ({componentId = '1'}) => {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <TouchableOpacity onPress={onPress}>
-            <Text>Press me</Text>
+            <Text
+              style={{
+                backgroundColor: '#784343',
+                color: 'white',
+                padding: 20,
+                fontSize: 16,
+              }}>
+              Tap to turn bottom tabs red
+            </Text>
           </TouchableOpacity>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <Section title="Home text"></Section>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -136,7 +145,8 @@ const styles = StyleSheet.create({
 App.options = () => ({
   bottomTabs: {
     visible: true,
-    backgroundColor: 'green',
+    backgroundColor:
+      Appearance.getColorScheme() === 'dark' ? Colors.darker : Colors.lighter,
     id: 'BOTTOM_TABS_LAYOUT',
     children: [
       {
