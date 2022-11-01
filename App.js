@@ -6,28 +6,17 @@
  * @flow strict-local
  */
 
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
-  TouchableOpacity,
-  Appearance,
 } from 'react-native';
 
-import {Navigation} from 'react-native-navigation';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -55,32 +44,8 @@ const Section = ({children, title}) => {
   );
 };
 
-const App = ({componentId}) => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const prevDarkMode = useRef(isDarkMode);
-
-  const onPress = () => {
-    console.log('onPress red bottomTabs');
-    Navigation.mergeOptions(componentId, {
-      bottomTabs: {
-        backgroundColor: 'red',
-      },
-    });
-  };
-  useEffect(() => {
-    if (isDarkMode !== prevDarkMode.current) {
-      prevDarkMode.current = isDarkMode;
-      console.log(
-        'should change bottom tabs background color; dark mode: %s',
-        isDarkMode,
-      );
-      Navigation.mergeOptions(componentId, {
-        bottomTabs: {
-          backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-        },
-      });
-    }
-  });
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -88,7 +53,6 @@ const App = ({componentId}) => {
 
   return (
     <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
@@ -98,21 +62,9 @@ const App = ({componentId}) => {
           }}>
           <Section title="Home">
             This app's bottoms tabs should react to light/dark mode change and
-            update in real-time. However it only happens after complete app
-            reload.
+            update in real-time.
           </Section>
           <View style={{marginBottom: 40}} />
-          <TouchableOpacity onPress={onPress}>
-            <Text
-              style={{
-                backgroundColor: '#784343',
-                color: 'white',
-                padding: 20,
-                fontSize: 16,
-              }}>
-              Tap to turn bottom tabs red
-            </Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -141,8 +93,6 @@ const styles = StyleSheet.create({
 App.options = () => ({
   bottomTabs: {
     visible: true,
-    backgroundColor:
-      Appearance.getColorScheme() === 'dark' ? Colors.darker : Colors.lighter,
     id: 'BOTTOM_TABS_LAYOUT',
     children: [
       {
